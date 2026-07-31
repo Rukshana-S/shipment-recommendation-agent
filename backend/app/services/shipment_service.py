@@ -8,21 +8,21 @@ from fastapi.responses import JSONResponse
 
 async def get_sources():
     if mongodb.db is None:
-        return JSONResponse(status_code=500, content={"success": False, "error": "Database connection not initialized"})
+        raise HTTPException(status_code=500, detail="Database connection not initialized. Check MongoDB IP Whitelist.")
     try:
         districts = await mongodb.db[settings.COLLECTION_NAME].distinct("source")
         return districts
     except Exception as e:
-        return JSONResponse(status_code=500, content={"success": False, "error": f"Database error: {str(e)}"})
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 async def get_destinations():
     if mongodb.db is None:
-        return JSONResponse(status_code=500, content={"success": False, "error": "Database connection not initialized"})
+        raise HTTPException(status_code=500, detail="Database connection not initialized. Check MongoDB IP Whitelist.")
     try:
         districts = await mongodb.db[settings.COLLECTION_NAME].distinct("destination")
         return districts
     except Exception as e:
-        return JSONResponse(status_code=500, content={"success": False, "error": f"Database error: {str(e)}"})
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 async def recommend_shipments(source: str, destination: str):
     if source == destination:
