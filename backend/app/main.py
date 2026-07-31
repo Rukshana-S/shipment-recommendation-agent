@@ -5,10 +5,14 @@ from app.api.shipments import router as shipments_router
 
 app = FastAPI(title="SupplySync-AI Shipment Recommendation API")
 
+from app.config.config import settings
+
+origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=True if "*" not in origins else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

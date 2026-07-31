@@ -1,0 +1,30 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: shipment-recommendation-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MONGODB_URI
+        sync: false # Must be provided by user (e.g., MongoDB Atlas connection string)
+      - key: DATABASE_NAME
+        value: SupplySyncAI
+      - key: COLLECTION_NAME
+        value: shipments
+      - key: ACCEPTED_SHIPMENTS_COLLECTION
+        value: accepted_shipments
+      - key: CORS_ORIGINS
+        value: "*" # Allows frontend to connect out-of-the-box. Change to specific URL for production hardening.
+
+  # Frontend Static Site
+  - type: web
+    name: shipment-recommendation-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://shipment-recommendation-agent.onrender.com
