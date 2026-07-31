@@ -25,4 +25,8 @@ async def startup_db_client():
 async def shutdown_db_client():
     await close_mongo_connection()
 
+@app.get("/")
+async def root():
+    return {"status": "online", "message": "SupplySync-AI Shipment Recommendation API is running", "docs": "/docs"}
+
 app.include_router(shipments_router, prefix="/api/shipments", tags=["shipments"])
